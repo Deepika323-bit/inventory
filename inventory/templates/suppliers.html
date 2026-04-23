@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Suppliers | StationeryPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-[#FDFCF0] font-sans text-slate-800 flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shadow-2xl">
+        <div class="p-8 flex items-center gap-3">
+            <div class="bg-orange-500 p-2 rounded-xl shadow-lg"><i class="fas fa-pen-nib text-white"></i></div>
+            <span class="text-xl font-black text-white">Stationery<span class="text-orange-500">Pro</span></span>
+        </div>
+         <nav class="flex-1 px-4 space-y-2">
+            <a href="/dashboard" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition"><i class="fas fa-chart-line"></i> Analytics</a>
+            <a href="/purchase" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-shopping-cart"></i> Purchase Orders</a>
+
+            <a href="/sales" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition group">
+                <i class="fas fa-cash-register group-hover:text-orange-500"></i>  Sales & Fulfilment
+            </a>
+            <a href="/suppliers" class="flex items-center gap-3 p-4 bg-orange-500/10 text-orange-500 rounded-2xl font-bold border border-orange-500/20">
+                <i class="fas fa-truck-loading"></i> Supplier Directory</a>
+            <a href="/profile" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-user-circle"></i> Profile View
+            </a>
+
+            <a href="/settings" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-cog"></i>System Settings </a>
+
+                </nav>
+                    <div class="p-6">
+            <a href="/" class="flex items-center gap-3 p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition font-bold">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col p-8 overflow-y-auto">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 italic">Vendor Directory</h1>
+                <p class="text-slate-500 font-medium">Manage your relationships with stationery brands and distributors.</p>
+            </div>
+            <div class="bg-white p-8 rounded-[2.5rem] border border-orange-100 shadow-xl shadow-orange-100/20 mb-10">
+            <h3 class="text-sm font-black text-orange-500 uppercase tracking-widest mb-6">Create New Suppliers detailed</h3>
+            <form action="/add_supplier" method="POST" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                <div>
+                 <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Supplier ID</label>
+                <input name="id" placeholder="  Supplier No." class="w-full border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Supplier Name</label>
+                    <input name="name" placeholder="Enter name" class="w-full border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Contact Number</label>
+                    <input name="contact" placeholder="+91 00000 00000 " class="w-full border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Email-id</label>
+                    <input name="email" placeholder="e.x xyz@gmail.com" class="w-full border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Category</label>
+                    <input name="category"  placeholder="E.X pencil(DOMS)" class="w-full border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                </div>
+                 <button class="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-orange-600 transition shadow-lg flex items-center gap-2">
+                <i class="fas fa-user-plus"></i> Add New Supplier
+            </button>
+            </form>
+           </div>
+        
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for supplier in suppliers %}
+            <div class="bg-white rounded-[2rem] border border-orange-100 p-6 shadow-xl shadow-orange-100/20 hover:border-orange-500 transition-all group">
+                <div class="flex justify-between items-start mb-6">
+                    <div class="bg-orange-50 p-4 rounded-2xl text-orange-600 group-hover:bg-orange-500 group-hover:text-white transition">
+                        <i class="fas fa-industry text-xl"></i>
+                    </div>
+                    <span class="text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full 
+                        {% if supplier.performance == 'Excellent' %} bg-green-100 text-green-700
+                        {% elif supplier.performance == 'Good' %} bg-blue-100 text-blue-700
+                        {% else %} bg-yellow-100 text-yellow-700 {% endif %}">
+                        {{ supplier.performance }}
+                    </span>
+                </div>
+                 <h3 class="text-xl font-black text-slate-900 mb-1">{{supplier.id}}</td>
+                <h3 class="text-xl font-black text-slate-900 mb-1">{{ supplier.name }}</h3>
+                <p class="text-xs font-bold text-orange-500 uppercase tracking-widest mb-4">{{ supplier.category }}</p>
+                
+                <div class="space-y-3 mb-6">
+                    
+                    <div class="flex items-center gap-3 text-sm text-slate-500">
+                        <i class="fas fa-envelope text-slate-300 w-4"></i> {{supplier.email }}
+                    </div>
+                    <div class="flex items-center gap-3 text-sm text-slate-500">
+                        <i class="fas fa-phone text-slate-300 w-4"></i> {{supplier.contact}}
+                    </div>
+                </div>
+
+                <div class="flex gap-2">
+                    <button class="flex-1 bg-[#FDFCF0] text-slate-700 py-3 rounded-xl font-bold text-sm hover:bg-slate-900 hover:text-white transition">Edit Profile</button>
+                    <button class="flex-1 bg-slate-900 text-white py-3 rounded-xl font-bold text-sm hover:bg-orange-600 transition">Order Stock</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+</body>
+</html>

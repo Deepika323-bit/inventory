@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sales & Fulfillment | StationeryPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-[#FDFCF0] font-sans text-slate-800 flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shadow-2xl">
+        <div class="p-8 flex items-center gap-3">
+            <div class="bg-orange-500 p-2 rounded-xl shadow-lg"><i class="fas fa-pen-nib text-white"></i></div>
+            <span class="text-xl font-black text-white">Stationery<span class="text-orange-500">Pro</span></span>
+        </div>
+       <nav class="flex-1 px-4 space-y-2">
+            <a href="/dashboard" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-chart-line"></i> Analytics</a>
+            <a href="/purchase" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-shopping-cart"></i> Purchase Orders</a>
+            <a href="/sales" class="flex items-center gap-3 p-4 bg-orange-500/10 text-orange-500 rounded-2xl font-bold border border-orange-500/20">
+                <i class="fas fa-cash-register"></i> Sales & Fulfilment
+            </a>
+           <a href="/suppliers" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition group">
+                <i class="fas fa-truck-loading"></i> Supplier Directory</a>
+
+
+           <a href="/profile" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-user-circle"></i> Profile View
+            </a>
+
+            <a href="/settings" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-cog"></i>System Settings </a>
+        </nav>
+        <div class="p-6">
+            <a href="/" class="flex items-center gap-3 p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition font-bold">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+
+    </aside>
+
+    <main class="flex-1 flex flex-col p-8 overflow-y-auto">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 italic">Order Fulfillment</h1>
+                <p class="text-slate-500 font-medium">Manage customer deliveries and daily shop sales.</p>
+            </div>
+    
+            <button class="bg-white border border-orange-200 text-slate-600 px-6 py-3 rounded-2xl font-bold hover:bg-orange-50 transition">
+                <i class="fas fa-print mr-2"></i> Print Packing Slips</button>
+        </div>
+
+        <div class="bg-white p-8 rounded-[2.5rem] border border-orange-100 shadow-xl shadow-orange-100/20 mb-10">
+            <h3 class="text-sm font-black text-orange-500 uppercase tracking-widest mb-6">Create New Sale</h3>
+            <form action="/add_sale" method="POST" class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Order ID</label>
+                    <input name="order_no" placeholder="#ORD-001" class="w-full border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Customer</label>
+                    <input name="customer" placeholder="Customer Name" class="w-full border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Items Summary</label>
+                    <input name="product" placeholder="e.g. 5x Blue Pens" class="w-full border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase mb-2 ml-2">Amount</label>
+                    <input name="total" type="number" placeholder="₹ 0.00" class="w-full border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                </div>
+                <button type="submit" class="bg-slate-900 text-white p-4 rounded-2xl font-black hover:bg-orange-600 transition shadow-lg shadow-slate-200">
+                    <i class="fas fa-plus mr-2"></i> Create Order</button>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-[2rem] border border-orange-100 shadow-xl shadow-orange-100/20 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50 text-slate-400 text-[10px] font-black uppercase tracking-widest">
+                    <tr>
+                        <th class="px-8 py-5">Order ID</th>
+                        <th class="px-8 py-5">Customer Details</th>
+                        <th class="px-8 py-5">Items Summary</th>
+                        <th class="px-8 py-5">Amount</th>
+                        <th class="px-8 py-5 text-center">Status</th>
+                        <th class="px-8 py-5 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-orange-50">
+                    {% for order in orders %}
+                    <tr class="hover:bg-[#FDFCF0]/50 transition group">
+                        <td class="px-8 py-5 font-mono text-sm font-bold text-slate-400 group-hover:text-orange-500">{{ order.order_no }}</td>
+                        <td class="px-8 py-5 font-black text-slate-900">{{ order.customer }}</td>
+                        <td class="px-8 py-5 text-slate-500 text-sm italic">{{ order.product }}</td>
+                        <td class="px-8 py-5 font-black text-slate-900">₹{{ order.total }}</td>
+                        <td class="px-8 py-5 text-center">
+                            <span class="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest
+                                {% if order.status == 'Completed' %} bg-green-100 text-green-700
+                                {% elif order.status == 'Shipped' %} bg-blue-100 text-blue-700
+                                {% else %} bg-orange-100 text-orange-700 {% endif %}">
+                                {{ order.status }}</span>
+                        </td>
+                        <td class="px-8 py-5 text-right space-x-2">
+                            <button class="bg-slate-50 p-3 rounded-xl text-slate-400 hover:text-orange-500 hover:bg-orange-50 transition"><i class="fas fa-truck"></i></button>
+                            <button class="bg-slate-50 p-3 rounded-xl text-slate-400 hover:text-slate-900 hover:bg-slate-200 transition"><i class="fas fa-file-invoice"></i></button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>

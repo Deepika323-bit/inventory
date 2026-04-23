@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analytics Hub | StationeryPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-[#FDFCF0] font-sans text-slate-800 flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shadow-2xl">
+        <div class="p-8 flex items-center gap-3">
+            <div class="bg-orange-500 p-2 rounded-xl shadow-lg shadow-orange-900/50">
+                <i class="fas fa-pen-nib text-white text-xl"></i>
+            </div>
+            <span class="text-xl font-black text-white tracking-tighter">Stationery<span class="text-orange-500">Pro</span></span>
+        </div>
+        
+        <nav class="flex-1 px-4 space-y-2">
+            <a href="/dashboard" class="flex items-center gap-3 p-4 bg-orange-500/10 text-orange-500 rounded-2xl font-bold border border-orange-500/20">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
+            <a href="/purchase" class="flex items-center gap-3 p-4 {% if request.path == '/purchase-orders' %}bg-orange-500/10 text-orange-500 font-bold border border-orange-500/20{% else %}hover:bg-slate-800{% endif %} rounded-2xl transition">
+        <i class="fas fa-shopping-cart"></i> Purchase Orders
+        </a>
+
+            <a href="/sales" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition group">
+                <i class="fas fa-cash-register group-hover:text-orange-500"></i>  Sales & Fulfilment
+            </a>
+            <a href="/suppliers" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition group">
+                <i class="fas fa-truck-loading"></i> Supplier Directory</a>
+
+
+           <a href="/profile" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-user-circle"></i> Profile View
+            </a>
+
+            <a href="/settings" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-cog"></i>System Settings </a>
+
+        </nav>
+        <div class="p-6">
+            <a href="/" class="flex items-center gap-3 p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition font-bold">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+
+    </aside>
+
+    <main class="flex-1 flex flex-col overflow-y-auto p-8">
+        
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 italic">Store Performance</h1>
+                <p class="text-slate-500 font-medium">Tracking every pen, paper, and pencil.</p>
+            </div>
+            <div class="flex gap-4">
+                <div class="bg-white px-4 py-2 rounded-xl border border-orange-100 shadow-sm flex items-center gap-2">
+                    <span class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                    <span class="text-sm font-bold">Live MySQL Sync</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="bg-white p-6 rounded-3xl border border-orange-50 shadow-sm shadow-orange-100/50">
+                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Stock Value</p>
+                <h2 class="text-2xl font-black text-slate-900"> {{ stats.stock_value | default("₹0") }}</h2>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-orange-50 shadow-sm shadow-orange-100/50">
+                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Low Stock</p>
+                <h2 class="text-2xl font-black text-orange-600"> {{ stats.low_stock_items | default(0) }} Items</h2>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-orange-50 shadow-sm shadow-orange-100/50">
+                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Daily Sales</p>
+                <h2 class="text-2xl font-black text-slate-900"> {{ stats.daily_orders | default(0) }}</h2>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-orange-50 shadow-sm shadow-orange-100/50">
+                <p class="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Top Seller</p>
+                <h2 class="text-2xl font-black text-blue-600">{{ stats.top_seller | default("N/A") }}</h2>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-[2rem] border border-orange-100 shadow-xl shadow-orange-100/20">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg">Sales Revenue (7 Days)</h3>
+                    <i class="fas fa-ellipsis-h text-slate-300"></i>
+                </div>
+                <canvas id="salesChart" height="150"></canvas>
+            </div>
+
+            <div class="bg-white p-8 rounded-[2rem] border border-orange-100 shadow-xl shadow-orange-100/20">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-lg">Inventory Split</h3>
+                    <i class="fas fa-chart-pie text-slate-300"></i>
+                </div>
+                <div class="flex items-center">
+                    <div class="w-1/2">
+                        <canvas id="catChart"></canvas>
+                    </div>
+                    <div class="w-1/2 pl-8 space-y-4">
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-500"></span> <span class="text-sm font-bold">Pens (40%)</span></div>
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-slate-800"></span> <span class="text-sm font-bold">Paper (35%)</span></div>
+                        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span> <span class="text-sm font-bold">Art Kits (25%)</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Sales Line Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+                datasets: [{
+                    label: 'Revenue',
+                    data: [5000, 8000, 4500, 9000, 12000, 15000, 11000],
+                    borderColor: '#f97316',
+                    backgroundColor: 'rgba(249, 115, 22, 0.05)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 4,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { display: false }, x: { grid: { display: false } } }
+            }
+        });
+
+        // Category Doughnut
+        const catCtx = document.getElementById('catChart').getContext('2d');
+        new Chart(catCtx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [40, 35, 25],
+                    backgroundColor: ['#f97316', '#0f172a', '#3b82f6'],
+                    hoverOffset: 4,
+                    borderWidth: 0
+                }]
+            },
+            options: { cutout: '80%', plugins: { legend: { display: false } } }
+        });
+    </script>
+</body>
+</html>

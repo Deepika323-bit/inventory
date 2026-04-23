@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Purchase Orders | StationeryPro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        function calculateTotal() {
+            let qty = document.getElementById("quantity").value;
+            let price = document.getElementById("price").value;
+            let total = qty * price;
+            document.getElementById("total").value = total;
+        }
+    </script>
+</head>
+<body class="bg-[#FDFCF0] font-sans text-slate-800 flex h-screen overflow-hidden">
+
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shadow-2xl">
+        <div class="p-8 flex items-center gap-3">
+            <div class="bg-orange-500 p-2 rounded-xl shadow-lg"><i class="fas fa-pen-nib text-white"></i></div>
+            <span class="text-xl font-black text-white italic">Stationery<span class="text-orange-500">Pro</span></span>
+        </div>
+        <nav class="flex-1 px-4 space-y-2">
+            <a href="/dashboard" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
+            <a href="/purchase" class="flex items-center gap-3 p-4 bg-orange-500/10 text-orange-500 rounded-2xl font-bold border border-orange-500/20">
+                <i class="fas fa-shopping-cart"></i> Purchase Orders
+            </a>
+            <a href="/sales" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-cash-register"></i>  Sales & Fulfilment
+            </a>
+           <a href="/suppliers" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition group">
+                <i class="fas fa-truck-loading"></i> Supplier Directory</a>
+
+
+             <a href="/profile" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-user-circle"></i> Profile View
+            </a>
+
+            <a href="/settings" class="flex items-center gap-3 p-4 hover:bg-slate-800 rounded-2xl transition">
+                <i class="fas fa-cog"></i>System Settings </a>
+
+        </nav>
+         <div class="p-6">
+            <a href="/" class="flex items-center gap-3 p-3 text-red-400 hover:bg-red-500/10 rounded-xl transition font-bold">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+         </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col p-8 overflow-y-auto">
+        <div class="mb-10">
+            <h1 class="text-3xl font-black text-slate-900 italic">Procurement Manager</h1>
+            <p class="text-slate-500 font-medium">Create and track orders with your stationery vendors.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-[2.5rem] border border-orange-100 shadow-xl shadow-orange-100/20 mb-10">
+            <h3 class="text-sm font-black text-orange-500 uppercase tracking-widest mb-6">New Purchase Entry</h3>
+            <form action="/add_purchase" method="POST" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+                <input name="supplier" placeholder="  Supplier No." class="md:col-span-1 border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                <input name="product" placeholder="Item Name" class="md:col-span-1 border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" required>
+                
+                <input id="quantity" name="quantity" type="number" placeholder="Qty" class="border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" onkeyup="calculateTotal()" required>
+                <input id="price" name="price" type="number" placeholder="Price ₹" class="border-orange-50 bg-[#FDFCF0] p-4 rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 font-bold" onkeyup="calculateTotal()" required>
+                <input id="total" name="total" type="number" placeholder="Total ₹" class="border-orange-50 bg-orange-50 text-orange-700 p-4 rounded-2xl font-black outline-none" readonly>
+
+                <button type="submit" class="bg-slate-900 text-white rounded-2xl font-black hover:bg-orange-600 transition shadow-lg shadow-slate-200">
+                    Add Order
+                </button>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-[2.5rem] border border-orange-100 shadow-xl shadow-orange-100/20 overflow-hidden">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50 text-slate-400 text-xs font-black uppercase tracking-widest">
+                    <tr>
+                        <th class="px-8 py-5 italic">ID</th>
+                        <th class="px-8 py-5">Supplier</th>
+                        <th class="px-8 py-5">Product</th>
+                        <th class="px-8 py-5 text-center">Qty</th>
+                        <th class="px-8 py-5">Total</th>
+                        <th class="px-8 py-5">Status</th>
+                        <th class="px-8 py-5 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-orange-50">
+                    {% for order in orders %}
+                    <tr class="hover:bg-[#FDFCF0]/50 transition group">
+                        <td class="px-8 py-5 font-mono text-sm font-bold text-slate-300">#{{order.id}}</td>
+                        <td class="px-8 py-5 font-black text-slate-900">{{order.supplier_id}}</td>
+                        <td class="px-8 py-5 font-medium text-slate-600">{{order.product}}</td>
+                        <td class="px-8 py-5 text-center font-bold text-slate-400">{{order.quantity}}</td>
+                        <td class="px-8 py-5 font-black text-slate-900">₹{{order.total}}</td>
+                        <td class="px-8 py-5">
+                            <form action="/update_status/{{order.id}}" method="POST" class="flex gap-2">
+                                <select name="status" class="bg-[#FDFCF0] border border-orange-100 text-xs font-bold p-2 rounded-xl outline-none focus:ring-2 focus:ring-orange-500">
+                                    <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+                                    <option value="Received" {% if order.status == "Received" %}selected{% endif %}>Received</option>
+                                </select>
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                            <button class="bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-black hover:bg-green-600 transition">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+</body>
+</html>
